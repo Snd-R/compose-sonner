@@ -104,5 +104,5 @@ tasks
     .configureEach {
         compilerOptions
             .jvmTarget
-            .set(JvmTarget.JVM_11)
+            .set(JvmTarget.JVM_17)
     }
