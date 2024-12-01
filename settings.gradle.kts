@@ -16,5 +16,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":sample")
 include(":sonner")
