@@ -1,11 +1,10 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.mavenPublish)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -25,41 +24,18 @@ kotlin {
         }
         binaries.library()
     }
-    js(IR) {
-        moduleName = "compose-sooner-jscanvas"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "compose-sooner-jscanvas.js"
-            }
-
-            testTask {
-                // Tests are broken now: Module not found: Error: Can't resolve './skiko.mjs'
-                enabled = false
-            }
-        }
-        binaries.library()
-    }
-
     androidTarget {
         publishLibraryVariants("release")
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
-        }
+        compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
     }
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    jvm("desktop")
+    jvm("desktop") {
+        compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
+    }
 
     sourceSets {
         val desktopMain by getting
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -94,15 +70,5 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
-    }
 }
 
-tasks
-    .withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>()
-    .configureEach {
-        compilerOptions
-            .jvmTarget
-            .set(JvmTarget.JVM_17)
-    }
