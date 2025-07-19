@@ -11,7 +11,7 @@ plugins {
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "compose-sooner"
+        outputModuleName = "compose-sooner"
         browser {
             commonWebpackConfig {
                 outputFileName = "compose-sooner.js"
