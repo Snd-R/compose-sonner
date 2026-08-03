@@ -4,11 +4,18 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.androidMultiplatformLibrary)
 }
 
 kotlin {
+    android {
+        namespace = "com.dokar.sonner.core"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        compilerOptions { jvmTarget = JvmTarget.JVM_17 }
+    }
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         outputModuleName = "compose-sooner"
@@ -23,10 +30,6 @@ kotlin {
             }
         }
         binaries.library()
-    }
-    androidTarget {
-        publishLibraryVariants("release")
-        compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
     }
     jvm("desktop") {
         compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
@@ -57,22 +60,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "com.dokar.sonner.core"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
